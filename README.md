@@ -53,12 +53,30 @@ $$
 then equations 5 and 6 are equivalent to the code in python:
 
 ```python
-ex[k] = ex[k] + 0.5 * (hy[k-1]-hy[k])
+ex[k] = ex[k] + 0.5 * (hy[k-1]-hy[k])  (eq.7)
 ```
 
 and 
 
 ```python
-hy[k] = hy[k] + 0.5 * (ex[k]-ex[k+1])
+hy[k] = hy[k] + 0.5 * (ex[k]-ex[k+1])  (eq.8)
 ```
+
+Time is implicit in the FDTD method. In equations 7 and 8, right side is the previous value. Position is explicit, the only difference is that k + 1/2 and k - 1/2 is rounded to k and k-1.
+
+The program **ch_1_1.py** use the equations 7, 8 and a Gaussian wave as a source at the center of the computational domain. The pulse propagates away in both directions.
+
+To see this result, first activate the virtual environment 
+
+```bash
+.\venv\Scripts\activate
+```
+
+then run 
+
+```
+py ch_1_1.py
+```
+
+
 
