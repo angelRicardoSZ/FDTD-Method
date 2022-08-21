@@ -13,7 +13,7 @@ In this chapter, a one dimensional simulation is developed. For this end a serie
 
 **ch_1_1.py**.
 
-In this section a Gaussian pulse is propagated on th z-axis such that the electric field oscillates on the x-axis and the magnetic field on the y-axis, for this, Maxwell´s equations are solved in a vaccum. 
+In this section a Gaussian pulse is propagated on th z-axis such that the electric field oscillates on the x-axis and the magnetic field on the y-axis, for this, Maxwell´s equations are solved in a vacuum. 
 $$
 \frac{\partial E_{x}}{\partial t} =- \frac{1}{\epsilon_{0}} \frac{\partial H_{y}}{\partial z} \ \ \ \ \  (eq. 1)
 $$
@@ -22,15 +22,43 @@ $$
 \frac{\partial H_{y}}{\partial t} =- \frac{1}{\mu_{0}} \frac{\partial E_{x}}{\partial z} \ \ \ \ \  (eq. 2)
 $$
 
-Using the central difference approximations for the space and time derivatives and using the following arrangement
+Using the central difference approximations for the space and time derivatives and using the arrangement showed in Figure 1.1 in the book we get the following equations in an iterative algorithm:
+$$
+E_{x}^{n+1/2}(k) = 	E_{x}^{n-1/2}(k)-\frac{\Delta t }{\epsilon_{0} \Delta x}[H_{y}^{n}(k+1/2)-H_{y}^{n}(k-1/2)]  \ \ \ (eq.3)
+$$
+and for the magnetic field
+$$
+H_{y}^{n+1}(k+1/2) = 	H_{y}^{n}(k+1/2)-\frac{\Delta t }{\mu_{0} \Delta x}[E_{x}^{n+1/2}(k+1)-E_{x}^{n+1/2}(k)]  \ \ \ (eq.4)
+$$
+Finally we write these last equations on the same scale using the factor
+$$
+\tilde{E} = \sqrt{\frac{\epsilon_{0}}{\mu_{0}} } E
+$$
+then the equations 3-4 become: 
+$$
+\tilde{E}_{x}^{n+1/2}(k) = \tilde{E}_{x}^{n-1/2}(k)-\frac{\Delta t }{\epsilon_{0} \Delta x}[H_{y}^{n}(k+1/2)-H_{y}^{n}(k-1/2)]  \ \ \ (eq.5)
+$$
+and
+$$
+H_{y}^{n+1}(k+1/2) = 	H_{y}^{n}(k+1/2)-\frac{\Delta t }{\sqrt{\epsilon_{0} \mu_{0}}  \Delta x}[\tilde{E}_{x}^{n+1/2}(k+1)-\tilde{E}_{x}^{n+1/2}(k)]  \ \ \ (eq.6)
+$$
+Using
+$$
+\Delta t = \frac{\Delta x }{2 c_{0}}
+$$
+we get
+$$
+\frac{\Delta t }{\sqrt{\epsilon_{0} \mu_{0}} \Delta x} = \frac{\Delta x }{2 c_{0}}  \frac{1} {\sqrt{\epsilon_{0} \mu_{0}} \Delta x}  = 1/2
+$$
+then equations 5 and 6 are equivalent to the code in python:
 
-![](D:\Software development\FDTD-Method\Houle 2020\ch1_1_1.png)
+```python
+ex[k] = ex[k] + 0.5 * (hy[k-1]-hy[k])
+```
 
+and 
 
-
-
-
-
-
-
+```python
+hy[k] = hy[k] + 0.5 * (ex[k]-ex[k+1])
+```
 
