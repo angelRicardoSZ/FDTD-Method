@@ -14,8 +14,8 @@ Parameters: nz: spatial steps
 """
 import numpy as np
 from math import exp
-from matplotlib import pyplot as plt
 
+import utilities
 
 nz = int(input("Ingresa el número de pasos espaciales, por ejemplo 200 (debe ser un número par): "))
 
@@ -24,8 +24,13 @@ nz = int(input("Ingresa el número de pasos espaciales, por ejemplo 200 (debe se
 nt = int(input("Ingresa el número de pasos temporales, por ejemplo 270 (debe ser un número par): "))
 
 # Validation of nt
+print("Parameters of source 1")
 
-spatialOffset = int(input("Ingresa el desfase espacial para la onda, por ejemplo -20 : "))
+spatialOffset1 = int(input("Ingresa el desfase espacial para la onda 1, por ejemplo -20 : "))
+
+temporalOffset1 = int(input("Ingresa el desfase temporal para la onda 1, por ejemplo 40 : "))
+
+bandwidth1= int(input("Ingresa el ancho de banda para la onda 1, por ejemplo 12 : "))
 
 # Creating arrays ex and hy (this array stores the data for each time step temporally)
 ex = np.zeros(nz)
@@ -38,16 +43,15 @@ hy = np.zeros(nz)
 # .
 # .
 # row t = (nt-1)*time_step : z = 0, z = k*1,  z = k*2, ..., z = k*(nz-1)
+
 exWave = np.zeros((nz,nt)) 
 hyWave = np.zeros((nz,nt))   
 
 # Wave parameters
 
-nsource1 = int(nz / 2) + spatialOffset
+# Initial position
+nsource1 = int(nz / 2) + spatialOffset1
 #nsource2 = int(nx / 2) - 20
-
-tsource1 = 40
-width1 = 12
 
 # FDTD-1D method
 for time_step in range(1, nt + 1):
@@ -56,7 +60,7 @@ for time_step in range(1, nt + 1):
         #ex[k] = ex[k] + 0.5 * (hy[k - 1] - hy[k])       # Equation 1.9a from book
         ex[k] = ex[k] + 1 * (hy[k - 1] - hy[k])       # Courant number -> 1
         # Source
-        source = exp(-0.5 * ((tsource1 - time_step) / width1) ** 2)
+        source = exp(-0.5 * ((temporalOffset1 - time_step) / bandwidth1) ** 2)
         ex[nsource1] = source    # Source located at kc - 20
         #ex[nsource2] = source    # Source located at kc + 20             
     # Hy
@@ -69,26 +73,19 @@ for time_step in range(1, nt + 1):
     hyWave[:,time_step-1] = hy
     
 # Visualization
-plt.rcParams['font.size'] = 12
-plt.figure(figsize=(8, 3.5))
+# automatizar oara cualquier fraccion
+
+t_select = int(((nt-1)/10)*1)
+utilities.plot(t_select,exWave,hyWave)
+
+t_select = int(((nt-1)/10)*3)
+utilities.plot(t_select,exWave,hyWave)
 
 t_select = int(((nt-1)/10)*5)
-plt.subplot(211)
-plt.plot(exWave[:,t_select], color='k', linewidth=1)
-plt.ylabel('E$_x$', fontsize='14')
-plt.xticks(np.arange(0, 201, step=20))
-plt.xlim(0, 200)
-plt.yticks(np.arange(-1, 1.2, step=1))
-plt.ylim(-1.2, 1.2)
-plt.text(100, 0.5, 'T = {}'.format(t_select),horizontalalignment='center')
+utilities.plot(t_select,exWave,hyWave)
 
-plt.subplot(212)
-plt.plot(hyWave[:,t_select], color='k', linewidth=1)
-plt.ylabel('H$_y$', fontsize='14')
-plt.xlabel('FDTD cells')
-plt.xticks(np.arange(0, 201, step=20))
-plt.xlim(0, 200)
-plt.yticks(np.arange(-1, 1.2, step=1))
-plt.ylim(-1.2, 1.2)
-plt.subplots_adjust(bottom=0.2, hspace=0.45)
-plt.show()
+t_select = int(((nt-1)/10)*8)
+utilities.plot(t_select,exWave,hyWave)
+
+t_select = int(((nt-1)/10)*9)
+utilities.plot(t_select,exWave,hyWave)

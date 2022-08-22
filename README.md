@@ -78,5 +78,7 @@ then run
 py ch_1_1.py
 ```
 
+Activities
 
+1.- 
 
